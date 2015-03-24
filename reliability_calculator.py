@@ -185,8 +185,6 @@ def dfs(graph, start):
 
     return visited
 
-# dfs(graph, 'A') # {'E', 'D', 'F', 'A', 'C', 'B'}
-# print graph
 
 
 def isAllConnected(truth_list, input_list):
