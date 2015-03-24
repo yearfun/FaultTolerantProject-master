@@ -14,7 +14,6 @@ def sol(mst_list, notused_list, rg, budget):
     # for debug graph function
     # getGraph(mst_list)
 
-    # cal R for mst
     for edge in mst_list:
         nodes1.append(edge.vertice_1)
         nodes2.append(edge.vertice_2)
@@ -91,7 +90,6 @@ def sol(mst_list, notused_list, rg, budget):
     uselessLength = len(useless_listc)
     room = budget - money(useful_listc)
     print 'After building the minimum spanning tree we still have $' + str(room)
-    # print room
     if money(mst_list) > budget:
         print 'only a) can be found since '
     else:
@@ -101,9 +99,7 @@ def sol(mst_list, notused_list, rg, budget):
         if uselessLength == len(useless_listc):
             print 'All the not used edges are too expensive to add into the network'
         else:
-            # print useless_listc
             try_listc = list(useful_listc + useless_listc)
-            # print try_listc
             infoc = reliabilityTable (try_listc)
             rtryc = infoc.pop()
             costc = infoc.pop()
@@ -159,7 +155,7 @@ def reliabilityTable (test_list):
         rtmp = 1
 
     reliability = 0
-    # print rproduct_list
+
 
     for i in xrange(len(rproduct_list)):
         reliability = reliability+rproduct_list[i]*allConnected_list[i]
@@ -186,7 +182,7 @@ def dfs(graph, start):
         if vertex not in visited:
             visited.add(vertex)
             stack.extend(graph[vertex] - visited)
-    # print visited
+
     return visited
 
 # dfs(graph, 'A') # {'E', 'D', 'F', 'A', 'C', 'B'}
@@ -213,8 +209,6 @@ def isAllConnected(truth_list, input_list):
             test_list.remove(edge)
         i = i+1
 
-    # print truth_list
-    # print test_list
 
     if len(test_list) >= (len(cities_list)-1):
         test_graph = getGraph(test_list)
@@ -223,9 +217,6 @@ def isAllConnected(truth_list, input_list):
 
 
     visited_list = dfs(test_graph,cities_list[1])
-    # print 'visited cities'
-    # print visited_list
-    # print cities_list
 
     if len(cities_list) > len(visited_list):
         return False
@@ -246,7 +237,6 @@ def getGraph(test_list):
     for key in dict_graph:
         dict_graph[key] = set(dict_graph[key])
 
-    # print dict_graph
     return dict_graph
 
 def money(list):
