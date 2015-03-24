@@ -4,25 +4,22 @@ def sol(mst_list, notused_list, rg, budget):
     notused_list = sorted(notused_list, key=lambda edge: edge.reliability, reverse=True)
     mst_list = sorted(mst_list, key=lambda edge: edge.vertice_1, reverse=True)
 
-    # print notused_list
 
-
-    r=1;
     cmin=0
-    numOfEdges = len(mst_list) + len(notused_list)
+
 
     nodes1 = list()
     nodes2 = list()
-    test_set = set()
-    getGraph(mst_list)
+
+    # for debug graph function
+    # getGraph(mst_list)
 
     # cal R for mst
     for edge in mst_list:
         nodes1.append(edge.vertice_1)
         nodes2.append(edge.vertice_2)
         cmin = cmin+float(edge.getCost())
-        # print 'edge:'
-        # print edge
+
 
 
 
@@ -32,22 +29,17 @@ def sol(mst_list, notused_list, rg, budget):
 
     # to find the total cities in the network
     nodes = nodes1+nodes2
-    nodes1 = set(nodes1)
-    # print nodes1
-    nodes2 = set(nodes2)
-    # print nodes2
     nodes = set(nodes)
-    # print(nodes)
     numOfNodes = len(nodes)
 
 
-    info_mst = trueTable (mst_list, rg, budget, nodes)
+    info_mst = reliabilityTable (mst_list)
     rmst = info_mst.pop()
     cmst = info_mst.pop()
 
     print 'a)   Meet  a  given  reliability  goal by calculating the reliability for fully connected network '
     all_list = list(mst_list + notused_list)
-    info = trueTable (all_list, rg, budget, nodes)
+    info = reliabilityTable (all_list)
     rmax = info.pop()
     cost = info.pop()
     if rmax < rg:
@@ -66,7 +58,7 @@ def sol(mst_list, notused_list, rg, budget):
     if rmst > budget:
         print 'only a) can be found'
     else:
-        infob = trueTable (useful_listb, rg, budget, nodes)
+        infob = reliabilityTable (useful_listb)
         rb = infob.pop()
         cb = infob.pop()
         if rb>= rg:
@@ -81,7 +73,7 @@ def sol(mst_list, notused_list, rg, budget):
         else:
             while rb < rg and cb<budget and len(useless_listb) > 0:
                 useful_listb.append(useless_listb.pop())
-                infob = trueTable (useful_listb, rg, budget, nodes)
+                infob = reliabilityTable (useful_listb)
                 rb = infob.pop()
                 cb = infob.pop()
             print 'Network design'
@@ -112,7 +104,7 @@ def sol(mst_list, notused_list, rg, budget):
             # print useless_listc
             try_listc = list(useful_listc + useless_listc)
             # print try_listc
-            infoc = trueTable (try_listc, rg, budget, nodes)
+            infoc = reliabilityTable (try_listc)
             rtryc = infoc.pop()
             costc = infoc.pop()
             print 'Network design'
@@ -129,9 +121,8 @@ def sol(mst_list, notused_list, rg, budget):
 
 
 
-def trueTable (test_list, rg, budget, nodes):
+def reliabilityTable (test_list):
     test_list = sorted(test_list,  key=lambda edge: edge.reliability, reverse=True)
-    # useless_list = sorted(useless_list,  key=lambda edge: edge.reliability, reverse=True)
     testtable = truthtable(len(test_list));
 
     r = 0
@@ -146,18 +137,11 @@ def trueTable (test_list, rg, budget, nodes):
         r_list.append(edge.reliability)
         cost = edge.cost + cost
 
-
-    # print 'Rlist'
-    # print r_list
-
     for row in testtable:
-        # print 'test table'
-        # print row
         oconnected = isAllConnected(row, test_list)
         allConnected_list.append(oconnected)
 
-    # print 'all connected list'
-    # print allConnected_list
+
 
     for row in testtable:
         for i in xrange(len(test_list)):
@@ -166,10 +150,6 @@ def trueTable (test_list, rg, budget, nodes):
             else:
                 row[i] = 1- r_list[i]
 
-    # print testtable
-
-    # print 'reliability table'
-    # print testtable
 
     rproduct_list = []
     for row in testtable:
@@ -183,18 +163,13 @@ def trueTable (test_list, rg, budget, nodes):
 
     for i in xrange(len(rproduct_list)):
         reliability = reliability+rproduct_list[i]*allConnected_list[i]
-    #
-    # print 'calculated reliability'
-    # print test_list
-    # print reliability
-    # print cost
+
     return [test_list, cost, reliability]
 
 
 
 
 def truthtable (n):
-    # n = len(test_list)
     if n < 1:
         return [[]]
     subtable = truthtable(n-1)
@@ -204,14 +179,10 @@ def truthtable (n):
 # graph example {'A': set(['C']), 'C': set(['A', 'B', 'D']), 'B': set(['C', 'E']), 'E': set(['B']), 'D': set(['C'])}
 
 def dfs(graph, start):
-    # print 'dfs'
-    # print graph
-    # print start
     visited = set()
     stack = [start]
     while stack:
         vertex = stack.pop()
-        # print graph[vertex]
         if vertex not in visited:
             visited.add(vertex)
             stack.extend(graph[vertex] - visited)
@@ -223,12 +194,9 @@ def dfs(graph, start):
 
 
 def isAllConnected(truth_list, input_list):
-    # connected_list = []
     cities_list = list()
-    new_list = []
     test_list = list(input_list)
-    # print 'is all connected'
-    # print input_list
+
 
     for edge in test_list:
         cities_list.append(edge.vertice_1)
@@ -240,7 +208,6 @@ def isAllConnected(truth_list, input_list):
         return False
 
     i = 0
-    # print i
     for edge in test_list:
         if truth_list[i] == 0:
             test_list.remove(edge)
@@ -270,17 +237,12 @@ def getGraph(test_list):
     for edge in test_list:
         if edge.vertice_1 not in dict_graph:
             dict_graph[edge.vertice_1] = set(edge.vertice_2)
-            # print dict_graph
         else:
             dict_graph[edge.vertice_1].update(set(edge.vertice_2))
-            # print dict_graph
         if edge.vertice_2 not in dict_graph:
             dict_graph[edge.vertice_2] = set(edge.vertice_1)
-            # print dict_graph
         else:
             dict_graph[edge.vertice_2].update(set(edge.vertice_1))
-            # print dict_graph
-    # print dict_graph
     for key in dict_graph:
         dict_graph[key] = set(dict_graph[key])
 
