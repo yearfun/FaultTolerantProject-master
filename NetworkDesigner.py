@@ -40,8 +40,14 @@ mst_set = set(mst)
 unused_edge = edge_set.difference(mst_set)
 
 cost_mst = 0
-Rg = 0.7
+Rg = 0.8
 budget = 1500
+print 'The given network has following edges to be used'
+print sorted_edge_list
+print 'Desired reliability goal of the network'
+print Rg
+print 'Cost constrain of the network'
+print budget
 
 for edge in mst:
     # print edge.reliability
@@ -53,10 +59,13 @@ edge_set = set(sorted_edge_list)
 mst_set = set(mst)
 unused_edge = edge_set.difference(mst_set)
 
+print '\nThe minimum spanning tree is:'
+print mst
+print '\n'
+
 reliability_calculator.sol(mst_set, unused_edge, Rg, budget)
 
-print 'minimum spanning tree'
-print mst
+
 # print unused_edge
 # print reliability_mst
 #

@@ -69,42 +69,58 @@ def sol(mst_list, notused_list, rg, budget):
         infob = trueTable (useful_listb, rg, budget, nodes)
         rb = infob.pop()
         cb = infob.pop()
-        while rb < rg and cb<budget and len(useless_listb) > 0:
-            useful_listb.append(useless_listb.pop())
-            infob = trueTable (useful_listb, rg, budget, nodes)
-            rb = infob.pop()
-            cb = infob.pop()
-        print 'Network design'
-        print infob
-        print 'Network Reliability'
-        print rb
-        print 'Network Cost'
-        print cb
+        if rb>= rg:
+            print 'minimum spanning tree meets reliability goal and the constrain'
+            print 'Network design'
+            print infob
+            print 'Network Reliability'
+            print rb
+            print 'Network Cost'
+            print cb
+
+        else:
+            while rb < rg and cb<budget and len(useless_listb) > 0:
+                useful_listb.append(useless_listb.pop())
+                infob = trueTable (useful_listb, rg, budget, nodes)
+                rb = infob.pop()
+                cb = infob.pop()
+            print 'Network design'
+            print infob
+            print 'Network Reliability'
+            print rb
+            print 'Network Cost'
+            print cb
 
 
 
     print 'c)   Maximize  reliability  subject  to  a  given  cost  constraint'
     useful_listc = list(mst_list)
     useless_listc = sorted(notused_list, key=lambda edge: edge.reliability, reverse=True)
+    uselessLength = len(useless_listc)
     room = budget - money(useful_listc)
-    print room
+    print 'After building the minimum spanning tree we still have $' + str(room)
+    # print room
     if money(mst_list) > budget:
-        print 'only a) can be found'
+        print 'only a) can be found since '
     else:
         while money(useless_listc) > room:
             useless_listc.pop()
-        print useless_listc
-        try_listc = list(useful_listc + useless_listc)
-        print try_listc
-        infoc = trueTable (try_listc, rg, budget, nodes)
-        rtryc = infoc.pop()
-        costc = infoc.pop()
-        print 'Network design'
-        print infoc
-        print 'Network Reliability'
-        print rtryc
-        print 'Network Cost'
-        print costc
+
+        if uselessLength == len(useless_listc):
+            print 'All the not used edges are too expensive to add into the network'
+        else:
+            # print useless_listc
+            try_listc = list(useful_listc + useless_listc)
+            # print try_listc
+            infoc = trueTable (try_listc, rg, budget, nodes)
+            rtryc = infoc.pop()
+            costc = infoc.pop()
+            print 'Network design'
+            print infoc
+            print 'Network Reliability'
+            print rtryc
+            print 'Network Cost'
+            print costc
 
 
 
